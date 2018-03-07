@@ -1,0 +1,30 @@
+[
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "CTSIrelandKeyPairs"
+  }, 
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-54ff4832"
+  },
+  {
+    "ParameterKey": "SSHLocation",
+    "ParameterValue": "0.0.0.0/0 "
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "SubnetWeb1a",
+    "ParameterValue": "subnet-12f82e5a"
+  },
+  {
+    "ParameterKey": "SubnetWeb1b",
+    "ParameterValue": "subnet-b025e5d6"
+  },
+  {
+    "ParameterKey": "SubnetWeb1c",
+    "ParameterValue": "subnet-3492906f"
+  }
+]

@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation Template for OB Dev Provisioning
+Parameters: 
+  StackName:  
+    Description: Name of the CloudFormation stack that contains the required exports for this stack.
+    Type: String
+    Default: DevMain    
+  # VpcId:  
+  #   Type: String
+  #   Description: VpcId of the existing Virtual Private Cloud (VPC)
+  #   Default: vpc-54ff4832      
+  # SSHLocation:  
+  #   Description: The IP address range that can be used to SSH to the EC2 instances
+  #   Type: String
+  #   MinLength: 9
+  #   MaxLength: 18
+  #   Default: 0.0.0.0/0         
+  # InstanceType:  
+  #   Description: WebServer EC2 instance type
+  #   Type: String
+  #   Default: t2.micro
+  #   ConstraintDescription: must be a valid EC2 instance type.      
+  # SubnetWeb1a:  
+  #   Description: WebServer EC2 instance type
+  #   Type: String
+  #   Default: subnet-12f82e5a      
+  # SubnetWeb1b:  
+  #   Description: WebServer EC2 instance type
+  #   Type: String
+  #   Default: subnet-b025e5d6      
+  # SubnetWeb1c:  
+  #   Description: WebServer EC2 instance type
+  #   Type: String
+  #   Default: subnet-3492906f  
+
+Mappings:  
+  RegionMap:  
+    eu-west-1:  
+      "AMI": "ami-d834aba1"
+      "NAT": "ami-076d5d61"     
+    eu-west-2:  
+       "AMI": "ami-403e2524"
+       "NAT": "ami-0a4c5a6e"
+
+# Reserved for Creating Subnet. Not used currently.
+  # SubnetConfig:
+  #   Subnet1a: 
+  #     "AZ" : "us-east-1a"
+  #   Subnet1b:
+  #     "AZ" : "us-east-1b" 
+  #   Subnet1c:
+  #     "AZ" : "us-east-1c" 
+
+Resources:  
+# WebServer 1a Launch
+  WebServer1a: 
+    Type: AWS::EC2::Instance
+    Properties:  
+      InstanceType: 
+        "Fn::ImportValue": !Sub "${StackName}-InstanceType"   
+      KeyName: 
+        "Fn::ImportValue": !Sub "${StackName}-KeyName"
+      NetworkInterfaces: 
+        - 
+          NetworkInterfaceId: !Ref Eth1a
+          DeviceIndex: 0
+      ImageId: !FindInMap [ RegionMap, !Ref 'AWS::Region', AMI ]
+      Tags:
+        -
+          Key: Name
+          Value: Web Server 1a
+ 
+  # InstanceSecurityGroup1a: 
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:  
+  #     GroupDescription: Enable SSH access via port 22
+  #     SecurityGroupIngress:   
+  #       - 
+  #         CidrIp: !Ref SSHLocation
+  #         FromPort: 22
+  #         IpProtocol: tcp
+  #         ToPort: 22 
+  #     VpcId: !Ref VpcId
+            
+  Eth1a: 
+    Type: AWS::EC2::NetworkInterface
+    Properties:  
+      Description: eth0
+      GroupSet:
+        - 
+          "Fn::ImportValue": !Sub "${StackName}-SG1a"
+      SubnetId: 
+        "Fn::ImportValue": !Sub "${StackName}-Subnet1a"
+      Tags:
+        -
+          Key: Interface
+          Value: Primary 1a     
+
+# WebServer 1b Launch
+  WebServer1b: 
+    Type: AWS::EC2::Instance
+    Properties:  
+      InstanceType:
+        "Fn::ImportValue": !Sub "${StackName}-InstanceType"
+      KeyName: 
+        "Fn::ImportValue": !Sub "${StackName}-KeyName"
+      NetworkInterfaces: 
+        - 
+          NetworkInterfaceId: !Ref Eth1b
+          DeviceIndex: 0
+      ImageId: !FindInMap [ RegionMap, !Ref 'AWS::Region', AMI ]
+      Tags:
+        -
+          Key: Name
+          Value: Web Server 1b
+ 
+  # InstanceSecurityGroup1b: 
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:  
+  #     GroupDescription: Enable SSH access via port 22
+  #     SecurityGroupIngress:   
+  #       - 
+  #         CidrIp: !Ref SSHLocation
+  #         FromPort: 22
+  #         IpProtocol: tcp
+  #         ToPort: 22 
+  #     VpcId: !Ref VpcId
+            
+  Eth1b: 
+    Type: AWS::EC2::NetworkInterface
+    Properties:  
+      Description: eth0
+      GroupSet:
+        - 
+          Fn::ImportValue: !Sub "${StackName}-SG1b"
+      SubnetId: 
+        "Fn::ImportValue": !Sub "${StackName}-Subnet1b"
+      Tags:
+        -
+          Key: Interface
+          Value: Primary 1b
+
+# WebServer 1c Launch          
+  WebServer1c: 
+    Type: AWS::EC2::Instance
+    Properties:  
+      InstanceType: 
+        "Fn::ImportValue": !Sub "${StackName}-InstanceType"
+      KeyName: 
+        "Fn::ImportValue": !Sub "${StackName}-KeyName"
+      NetworkInterfaces: 
+        - 
+          NetworkInterfaceId: !Ref Eth1c
+          DeviceIndex: 0
+      ImageId: !FindInMap [ RegionMap, !Ref 'AWS::Region', AMI ]
+      Tags:
+        -
+          Key: Name
+          Value: Web Server 1c
+ 
+  # InstanceSecurityGroup1c: 
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:  
+  #     GroupDescription: Enable SSH access via port 22
+  #     SecurityGroupIngress:   
+  #       - 
+  #         CidrIp: !Ref SSHLocation
+  #         FromPort: 22
+  #         IpProtocol: tcp
+  #         ToPort: 22 
+  #     VpcId: !Ref VpcId
+            
+  Eth1c: 
+    Type: AWS::EC2::NetworkInterface
+    Properties:  
+      Description: eth0
+      GroupSet:
+        - 
+          "Fn::ImportValue": !Sub "${StackName}-SG1c"
+      SubnetId: 
+        "Fn::ImportValue": !Sub "${StackName}-Subnet1c"
+      Tags:
+        -
+          Key: Interface
+          Value: Primary 1c
